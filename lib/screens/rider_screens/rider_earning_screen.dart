@@ -346,7 +346,7 @@ class _RiderEarningScreenState extends State<RiderEarningScreen> with TickerProv
       context,
       MaterialPageRoute(
         builder: (context) => ConversationScreen(
-            chatRoomId: chatRoomId, myName: myName, userName: userName),
+            chatRoomId: chatRoomId, myName: myName, userName: userName, currentU: user!.uid,),
       ),
     );
   }

@@ -261,7 +261,7 @@ class _MechanicEarningScreenState extends State<MechanicEarningScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ConversationScreen(
-            chatRoomId: chatRoomId, myName: myName, userName: userName),
+            chatRoomId: chatRoomId, myName: myName, userName: userName, currentU: user!.uid,),
       ),
     );
   }

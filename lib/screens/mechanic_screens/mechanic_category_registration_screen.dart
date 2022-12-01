@@ -2,14 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/face_recognition_for_mechanic_screen.dart';
 
 import '../../models/userModel.dart';
 import '../../utils/fonts.dart';
 import '../../widgets/buttons.dart';
 
 class MechanicCategoryRegistrationScreen extends StatefulWidget {
-  const MechanicCategoryRegistrationScreen({Key? key}) : super(key: key);
-
+  MechanicCategoryRegistrationScreen({Key? key,required this.fullName, required this.email, required this.phoneNumber, required this.cnic, required this.password,required this.city,required this.uploadImage}) : super(key: key);
+  String? fullName;
+  String? email;
+  String? phoneNumber;
+  String? password;
+  String? cnic;
+  String? city;
+  String? uploadImage;
   @override
   State<MechanicCategoryRegistrationScreen> createState() => _MechanicCategoryRegistrationScreenState();
 }
@@ -435,6 +442,6 @@ class _MechanicCategoryRegistrationScreenState extends State<MechanicCategoryReg
         .collection("users")
         .doc(user?.uid)
         .update(userModel.toMechanicCategoryRegistration());
-    Navigator.pushNamed(context, "/login");
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>MechanicFaceDetectionScreen(fullName: widget.fullName, cnic: widget.cnic, email: widget.email, password: widget.password, profession: 'Mechanic', profileImageReference: widget.uploadImage)));
   }
 }

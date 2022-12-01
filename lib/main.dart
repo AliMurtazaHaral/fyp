@@ -27,6 +27,7 @@ import 'package:fyp/screens/mechanic_screens/mechanic_profile_screen.dart';
 import 'package:fyp/screens/mechanic_screens/mechanic_registration_screen.dart';
 import 'package:fyp/screens/mechanic_screens/mechanic_setting_screen.dart';
 import 'package:fyp/screens/mechanic_screens/mechanic_update_profile.dart';
+import 'package:fyp/screens/notification_to_specific_user.dart';
 import 'package:fyp/screens/otp_authentication/login_screen.dart';
 import 'package:fyp/screens/payment_methods/stripe_payment.dart';
 import 'package:fyp/screens/payment_screen.dart';

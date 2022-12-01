@@ -36,9 +36,9 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
     }
   }
 
-  createChatRoomAndStartConversation(String userName, String myName) {
+  createChatRoomAndStartConversation(String userName, String myName,String uid,String uid2) {
     List<String> users = [myName, userName];
-    String chatRoomId = getChatRoomId(myName, userName);
+    String chatRoomId = getChatRoomId(uid, uid2);
     Map<String, dynamic> chatRoomMap = {
       "users": users,
       "chatRoomId": chatRoomId,
@@ -48,7 +48,7 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ConversationScreen(
-            chatRoomId: chatRoomId, myName: myName, userName: userName),
+            chatRoomId: chatRoomId, myName: myName, userName: userName, currentU: user!.uid,),
       ),
     );
   }
@@ -419,7 +419,7 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                                                                               'fullName'],
                                                                           loggedInUser
                                                                               .fullName
-                                                                              .toString());
+                                                                              .toString(),'${streamSnapshot.data?.docs[index].id}',user!.uid);
                                                                     },
                                                                     child:
                                                                         Container(

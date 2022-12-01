@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,10 +17,12 @@ class MechanicRegistrationScreen extends StatefulWidget {
   const MechanicRegistrationScreen({Key? key}) : super(key: key);
 
   @override
-  State<MechanicRegistrationScreen> createState() => _MechanicRegistrationScreenState();
+  State<MechanicRegistrationScreen> createState() =>
+      _MechanicRegistrationScreenState();
 }
 
-class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen> with TickerProviderStateMixin {
+class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
+    with TickerProviderStateMixin {
   final fullNameEditingController = TextEditingController();
   final emailEditingController = TextEditingController();
   final passwordEditingController = TextEditingController();
@@ -99,7 +100,6 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
           fontSize: null,
           fontStyle: FontStyle.normal,
         ),
-
       ),
     );
     //email field
@@ -112,8 +112,7 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
           return ("Please Enter Your Email");
         }
         // reg expression for email validation
-        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-            .hasMatch(value)) {
+        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
           return ("Please Enter a valid email");
         }
         return null;
@@ -283,15 +282,15 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
                 storage
                     .uploadFileImage(path, fileName)
                     .then((value) => const SnackBar(
-                  content: Text("FIle Has been uploaded successfully"),
-                ));
+                          content: Text("FIle Has been uploaded successfully"),
+                        ));
                 getUrl = FirebaseStorage.instance.ref().child(fileName!);
               }
             },
             child: const Text(
               "Upload Image",
               style:
-              TextStyle(color: buttontextColor, fontSize: buttonTextSize),
+                  TextStyle(color: buttontextColor, fontSize: buttonTextSize),
             ),
           ),
         ),
@@ -299,14 +298,14 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
     );
     //signup button
     final signUpButton =
-    PrimaryButton.primaryButton(context, "Next", onPressed: () {
+        PrimaryButton.primaryButton(context, "Next", onPressed: () {
       signUp(emailEditingController.text, passwordEditingController.text);
     });
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        color: primaryColor,
+        color: Colors.yellow,
         child: SingleChildScrollView(
           child: Container(
             child: Padding(
@@ -316,7 +315,7 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius:
-                  BorderRadius.all(Radius.circular(centralPadding)),
+                      BorderRadius.all(Radius.circular(centralPadding)),
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(defaultPadding),
@@ -333,12 +332,12 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
                         ),
                       ),
                       RotationTransition(
-                          turns: controller,
-                          child: Image.asset(
-                            "assets/images/logo.png",
-                            height: 200,
-                            width: 200,
-                          ),
+                        turns: controller,
+                        child: Image.asset(
+                          "assets/images/logo.png",
+                          height: 200,
+                          width: 200,
+                        ),
                       ),
                       fullNameField,
                       SizedBox(
@@ -389,7 +388,6 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
 
   final _auth = FirebaseAuth.instance;
   postDetailsToFirestore() async {
-
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
     UserModel userModel = UserModel();
@@ -410,7 +408,15 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
         .set(userModel.toBecomeMechanicRegistration());
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MechanicCategoryRegistrationScreen()),
+      MaterialPageRoute(
+          builder: (context) => MechanicCategoryRegistrationScreen(
+              fullName: fullNameEditingController.text,
+              email: emailEditingController.text,
+              phoneNumber: mobileNumberEditingController.text,
+              cnic: cnicEditingController.text,
+              password: passwordEditingController.text,
+              city: cityEditingController.text,
+              uploadImage: getUrl.fullPath.toString())),
     );
   }
 

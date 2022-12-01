@@ -8,7 +8,6 @@ import 'package:fyp/screens/book_mechanic_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
-
 import '../../models/userModel.dart';
 import '../../services/database.dart';
 import '../../utils/fonts.dart';
@@ -36,9 +35,9 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
     }
   }
 
-  createChatRoomAndStartConversation(String userName, String myName) {
+  createChatRoomAndStartConversation(String userName, String myName, String uid,String uid2) {
     List<String> users = [myName, userName];
-    String chatRoomId = getChatRoomId(myName, userName);
+    String chatRoomId = getChatRoomId(uid, uid2);
     Map<String, dynamic> chatRoomMap = {
       "users": users,
       "chatRoomId": chatRoomId,
@@ -48,7 +47,7 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ConversationScreen(
-            chatRoomId: chatRoomId, myName: myName, userName: userName),
+            chatRoomId: chatRoomId, myName: myName, userName: userName,currentU:user!.uid),
       ),
     );
   }
@@ -73,10 +72,10 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          actions: [],
-          backgroundColor: primaryColor,
-          title: const Text("Inbox"),
-          ),
+        actions: [],
+        backgroundColor: primaryColor,
+        title: const Text("Inbox"),
+      ),
       body: SingleChildScrollView(
         child: Container(
             height: MediaQuery.of(context).size.height,
@@ -104,11 +103,11 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
                                 .data
                                 ?.docs[index].id.split("_")[0]
                                 ==
-                                loggedInUser.fullName || streamSnapshot
+                                user!.uid || streamSnapshot
                                 .data
                                 ?.docs[index].id.split("_")[1]
                                 ==
-                                loggedInUser.fullName)
+                                user!.uid)
                                 ? Container(
 
                               decoration: BoxDecoration(
@@ -140,9 +139,9 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
                                       radius: 40, // Image radius
                                       child: Icon(Icons.person),
                                     ),
-                                    (loggedInUser.fullName==streamSnapshot.data?.docs[index].id.split("_")[0])?
+                                    (loggedInUser.fullName==streamSnapshot.data?.docs[index]['users'][0])?
                                     Text(
-                                      "${streamSnapshot.data?.docs[index].id.split("_")[1]}",
+                                      "${streamSnapshot.data?.docs[index]['users'][1]}",
                                       style: const TextStyle(
                                           fontWeight:
                                           FontWeight
@@ -150,7 +149,7 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
                                           fontSize:
                                           15),
                                     ):Text(
-                                      "${streamSnapshot.data?.docs[index].id.split("_")[0]}",
+                                      "${streamSnapshot.data?.docs[index]['users'][0]}",
                                       style: const TextStyle(
                                           fontWeight:
                                           FontWeight
@@ -158,24 +157,48 @@ class _RiderInboxScreenState extends State<RiderInboxScreen> {
                                           fontSize:
                                           15),
                                     ),
-                                    SizedBox(
-                                      height: MediaQuery.of(context)
-                                          .size
-                                          .height *
-                                          .02,
-                                    ),
+
 
                                     GestureDetector(
                                       onTap: () {
+                                        if(loggedInUser.fullName==streamSnapshot.data?.docs[index]['users'][0]){
+                                          if(user!.uid==streamSnapshot.data?.docs[index].id.split("_")[1]){
+                                            createChatRoomAndStartConversation(streamSnapshot.data?.docs[index]['users'][1],loggedInUser.fullName.toString(),
+                                                user!.uid,"${streamSnapshot.data?.docs[index].id.split("_")[0]}");
+                                          }
+                                          else{
+                                            createChatRoomAndStartConversation(streamSnapshot.data?.docs[index]['users'][1],loggedInUser.fullName.toString(),
+                                                user!.uid,"${streamSnapshot.data?.docs[index].id.split("_")[1]}");
+                                          }
 
-                                        createChatRoomAndStartConversation(
-                                            "${streamSnapshot.data?.docs[index].id.split("_")[0]}","${streamSnapshot.data?.docs[index].id.split("_")[1]}");
-
-
+                                        }
+                                        else{
+                                          if(user!.uid==streamSnapshot.data?.docs[index].id.split("_")[1]) {
+                                            createChatRoomAndStartConversation(
+                                                streamSnapshot.data
+                                                    ?.docs[index]['users'][0],
+                                                loggedInUser.fullName
+                                                    .toString(),
+                                                user!.uid,
+                                                "${streamSnapshot.data
+                                                    ?.docs[index].id.split(
+                                                    "_")[0]}");
+                                          }
+                                          else{
+                                            createChatRoomAndStartConversation(
+                                                streamSnapshot.data
+                                                    ?.docs[index]['users'][0],
+                                                loggedInUser.fullName
+                                                    .toString(),
+                                                user!.uid,
+                                                "${streamSnapshot.data
+                                                    ?.docs[index].id.split(
+                                                    "_")[1]}");
+                                          }
+                                        }
                                       },
                                       child:Icon(Icons.arrow_forward_ios,color: Colors.black,),
                                     ),
-
                                   ],
                                 ),
                               ),

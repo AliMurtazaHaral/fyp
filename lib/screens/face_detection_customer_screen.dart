@@ -56,50 +56,11 @@ class CustomerFaceDetectionScreenState extends State<CustomerFaceDetectionScreen
     second_Image = selectedImage;
 
     setState(() {
+      flag = true;
       selectedImage = null;
     });
-    flag = true;
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            contentPadding: EdgeInsets.all(0.0),
-            backgroundColor: Colors.white,
-            scrollable: true,
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.file(
-                    second_Image!,
-                    height: 150,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        "Name: ",
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                    ),
-                    Text(
-                      message!,
-                      style: TextStyle(color: Colors.teal[900]),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          );
-        });
+
+
   }
 
   Future pickImage(ImageSource source) async {
@@ -206,8 +167,12 @@ class CustomerFaceDetectionScreenState extends State<CustomerFaceDetectionScreen
                             RoundedButton.roundedButton(
                                 context, "assets/images/check.png", "",
                                 onTap: () {
+                                  setState(() {
+                                    flag = false;
+
+                                  });
                                   uploadImage();
-                                  //signUp(widget.email.toString(), widget.password.toString());
+                                  signUp(widget.email.toString(), widget.password.toString());
                                 }),
                             GestureDetector(
                                 onTap: () => {pickImage(ImageSource.camera)},

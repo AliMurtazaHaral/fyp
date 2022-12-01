@@ -293,29 +293,4 @@ class _MechanicHomeScreenState extends State<MechanicHomeScreen> {
       )),
     );
   }
-
-  getChatRoomId(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return "$b\_$a";
-    } else {
-      return "$a\_$b";
-    }
-  }
-
-  createChatRoomAndStartConversation(String userName, String myName) {
-    List<String> users = [myName, userName];
-    String chatRoomId = getChatRoomId(myName, userName);
-    Map<String, dynamic> chatRoomMap = {
-      "users": users,
-      "chatRoomId": chatRoomId,
-    };
-    databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ConversationScreen(
-            chatRoomId: chatRoomId, myName: myName, userName: userName),
-      ),
-    );
-  }
 }

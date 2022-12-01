@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fyp/screens/face_recognition_for_rider_screen.dart';
 
 import '../../models/storage_model.dart';
 import '../../models/userModel.dart';
@@ -35,14 +36,6 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> with 
   late Reference getUrl;
   late AnimationController controller;
   late Animation<double> animation;
-  @override
-  void initState() {
-    super.initState();
-    controller =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
-    controller.repeat();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -356,14 +349,14 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> with 
     );
     //signup button
     final signUpButton =
-    PrimaryButton.primaryButton(context, "Register", onPressed: () {
+    PrimaryButton.primaryButton(context, "Next", onPressed: () {
       signUp(emailEditingController.text, passwordEditingController.text);
     });
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        color: primaryColor,
+        color: Colors.yellow,
         child: SingleChildScrollView(
           child: Container(
             child: Padding(
@@ -389,14 +382,13 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> with 
                               color: textColor),
                         ),
                       ),
-                      RotationTransition(
-                        turns: controller,
-                        child: Image.asset(
+                      Image.asset(
                           "assets/images/logo.png",
                           height: 200,
                           width: 200,
                         ),
-                      ),
+
+                      
                       fullNameField,
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .05,
@@ -474,7 +466,7 @@ class _RiderRegistrationScreenState extends State<RiderRegistrationScreen> with 
         .collection("users")
         .doc(user?.uid)
         .set(userModel.toBecomeRiderRegistration());
-    Navigator.pushNamed(context, "/login");
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>RiderFaceDetectionScreen(fullName: fullNameEditingController.text, cnic: cnicEditingController.text, email: emailEditingController.text, password: passwordEditingController.text, profession: 'profession', profileImageReference: getUrl.fullPath.toString())));
   }
 
   void signUp(String email, String password) async {

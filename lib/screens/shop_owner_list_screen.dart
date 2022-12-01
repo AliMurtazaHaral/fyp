@@ -90,6 +90,7 @@ class _ShopOwnerListScreenState extends State<ShopOwnerListScreen> {
                                 ? SingleChildScrollView(
                                   child: Column(children: [
                               for (var data in product!)
+
                                   FutureBuilder<String>(
                                       future: getImg(data["productImage"]),
                                       builder: (_, imageSnapshot) {

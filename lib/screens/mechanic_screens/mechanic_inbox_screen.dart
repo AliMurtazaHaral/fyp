@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,16 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fyp/models/book_mechanic_model.dart';
 import 'package:fyp/screens/book_mechanic_screen.dart';
-import 'package:fyp/screens/mechanic_screens/drawer/navigation_drawer_screen.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
 import '../../models/userModel.dart';
 import '../../services/database.dart';
 import '../../utils/fonts.dart';
-import '../../widgets/buttons.dart';
 import '../chat/views/conversationScreen.dart';
-import 'package:geolocator/geolocator.dart';
-
-
 
 class MechanicInboxScreen extends StatefulWidget {
   const MechanicInboxScreen({Key? key}) : super(key: key);
@@ -39,9 +35,9 @@ class _MechanicInboxScreenState extends State<MechanicInboxScreen> {
     }
   }
 
-  createChatRoomAndStartConversation(String userName, String myName) {
+  createChatRoomAndStartConversation(String userName, String myName, String uid,String uid2) {
     List<String> users = [myName, userName];
-    String chatRoomId = getChatRoomId(myName, userName);
+    String chatRoomId = getChatRoomId(uid, uid2);
     Map<String, dynamic> chatRoomMap = {
       "users": users,
       "chatRoomId": chatRoomId,
@@ -51,7 +47,7 @@ class _MechanicInboxScreenState extends State<MechanicInboxScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ConversationScreen(
-            chatRoomId: chatRoomId, myName: myName, userName: userName),
+            chatRoomId: chatRoomId, myName: myName, userName: userName, currentU: user!.uid,),
       ),
     );
   }
@@ -76,27 +72,10 @@ class _MechanicInboxScreenState extends State<MechanicInboxScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          actions: [],
-          backgroundColor: primaryColor,
-          title: const Text("Inbox"),
-          bottom: PreferredSize(
-            preferredSize: Size(2, 100),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                  child: TextField(
-                    onChanged: (value) => _runFilter(value),
-                    decoration: const InputDecoration(
-                        filled: true, //<-- SEE HERE
-                        fillColor: Colors.white,
-                        labelText: 'Search',
-                        suffixIcon: Icon(Icons.search)),
-                  ),
-                ),
-              ],
-            ),
-          )),
+        actions: [],
+        backgroundColor: primaryColor,
+        title: const Text("Inbox"),
+      ),
       body: SingleChildScrollView(
         child: Container(
             height: MediaQuery.of(context).size.height,
@@ -124,11 +103,11 @@ class _MechanicInboxScreenState extends State<MechanicInboxScreen> {
                                 .data
                                 ?.docs[index].id.split("_")[0]
                                 ==
-                                loggedInUser.fullName || streamSnapshot
+                                user!.uid || streamSnapshot
                                 .data
                                 ?.docs[index].id.split("_")[1]
                                 ==
-                                loggedInUser.fullName)
+                                user!.uid)
                                 ? Container(
 
                               decoration: BoxDecoration(
@@ -149,104 +128,79 @@ class _MechanicInboxScreenState extends State<MechanicInboxScreen> {
                               ),
                               margin: EdgeInsets.only(bottom: 30),
                               child:
-                              Row(
-                                children: [
-                                  Container(
-                                    width: MediaQuery.of(
-                                        context)
-                                        .size
-                                        .width *
-                                        .3,
-                                    height: MediaQuery.of(
-                                        context)
-                                        .size
-                                        .height *
-                                        .15,
-                                    color: Colors.grey,
-                                    child: Icon(
-                                        Icons.person),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context)
-                                        .size
-                                        .width *
-                                        .02,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      (loggedInUser.fullName==streamSnapshot.data?.docs[index].id.split("_")[0])?
-                                      Text(
-                                        "${streamSnapshot.data?.docs[index].id.split("_")[1]}",
-                                        style: const TextStyle(
-                                            fontWeight:
-                                            FontWeight
-                                                .bold,
-                                            fontSize:
-                                            15),
-                                      ):Text(
-                                        "${streamSnapshot.data?.docs[index].id.split("_")[0]}",
-                                        style: const TextStyle(
-                                            fontWeight:
-                                            FontWeight
-                                                .bold,
-                                            fontSize:
-                                            15),
-                                      ),
-                                      SizedBox(
-                                        height: MediaQuery.of(context)
-                                            .size
-                                            .height *
-                                            .02,
-                                      ),
-                                      Row(
+                              Padding(
+                                padding: EdgeInsets.only(left: 10,right: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: secondaryColor,
 
-                                        children: [
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width *
-                                                .08,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-
-                                              createChatRoomAndStartConversation(
-                                                  "${streamSnapshot.data?.docs[index].id.split("_")[0]}","${streamSnapshot.data?.docs[index].id.split("_")[1]}");
+                                      radius: 40, // Image radius
+                                      child: Icon(Icons.person),
+                                    ),
+                                    (loggedInUser.fullName==streamSnapshot.data?.docs[index]['users'][0])?
+                                    Text(
+                                      "${streamSnapshot.data?.docs[index]['users'][1]}",
+                                      style: const TextStyle(
+                                          fontWeight:
+                                          FontWeight
+                                              .bold,
+                                          fontSize:
+                                          15),
+                                    ):Text(
+                                      "${streamSnapshot.data?.docs[index]['users'][0]}",
+                                      style: const TextStyle(
+                                          fontWeight:
+                                          FontWeight
+                                              .bold,
+                                          fontSize:
+                                          15),
+                                    ),
 
 
-                                            },
-                                            child:
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors
-                                                      .black,
-                                                  borderRadius:
-                                                  BorderRadius.circular(0.0)),
-                                              padding: const EdgeInsets
-                                                  .symmetric(
-                                                  horizontal:
-                                                  16.0,
-                                                  vertical:
-                                                  16.0),
-                                              child: const Text(
-                                                  'Message',
-                                                  style: TextStyle(
-                                                      color: Color(0xFFFAC213),
-                                                      fontSize: 10)),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if(loggedInUser.fullName==streamSnapshot.data?.docs[index]['users'][0]){
+                                          if(user!.uid==streamSnapshot.data?.docs[index].id.split("_")[1]){
+                                            createChatRoomAndStartConversation(streamSnapshot.data?.docs[index]['users'][1],loggedInUser.fullName.toString(),
+                                                user!.uid,"${streamSnapshot.data?.docs[index].id.split("_")[0]}");
+                                          }
+                                          else{
+                                            createChatRoomAndStartConversation(streamSnapshot.data?.docs[index]['users'][1],loggedInUser.fullName.toString(),
+                                                user!.uid,"${streamSnapshot.data?.docs[index].id.split("_")[1]}");
+                                          }
 
-                                ],
+                                        }
+                                        else{
+                                          if(user!.uid==streamSnapshot.data?.docs[index].id.split("_")[1]) {
+                                            createChatRoomAndStartConversation(
+                                                streamSnapshot.data
+                                                    ?.docs[index]['users'][0],
+                                                loggedInUser.fullName
+                                                    .toString(),
+                                                user!.uid,
+                                                "${streamSnapshot.data
+                                                    ?.docs[index].id.split(
+                                                    "_")[0]}");
+                                          }
+                                          else{
+                                            createChatRoomAndStartConversation(
+                                                streamSnapshot.data
+                                                    ?.docs[index]['users'][0],
+                                                loggedInUser.fullName
+                                                    .toString(),
+                                                user!.uid,
+                                                "${streamSnapshot.data
+                                                    ?.docs[index].id.split(
+                                                    "_")[1]}");
+                                          }
+                                        }
+                                      },
+                                      child:Icon(Icons.arrow_forward_ios,color: Colors.black,),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                                 : const Text(
