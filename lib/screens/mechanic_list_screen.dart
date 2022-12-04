@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fyp/models/book_mechanic_model.dart';
 import 'package:fyp/screens/book_mechanic_screen.dart';
+import 'package:fyp/screens/loading_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import '../models/userModel.dart';
 import '../services/database.dart';
@@ -13,6 +14,7 @@ import '../widgets/buttons.dart';
 import 'chat/views/conversationScreen.dart';
 import 'map_screens/distance_calculator_screen.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MechanicListScreen extends StatefulWidget {
   const MechanicListScreen({Key? key}) : super(key: key);
@@ -52,7 +54,7 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
       ),
     );
   }
-
+  bool flag = true;
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
   final _auth = FirebaseAuth.instance;
@@ -71,7 +73,7 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return flag==false?LoadingScreen():Scaffold(
       appBar: AppBar(
           actions: [],
           backgroundColor: primaryColor,
@@ -387,14 +389,25 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                                                                     fontSize:
                                                                         15),
                                                               ),
-                                                              const Text(
-                                                                "5 star Rating",
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .normal,
-                                                                    fontSize:
-                                                                        15),
+                                                              RatingBar.builder(
+                                                                itemSize: 15,
+                                                                initialRating: double.parse(streamSnapshot.data?.docs[index]['rating']),
+                                                                minRating: 1,
+                                                                direction: Axis.horizontal,
+                                                                allowHalfRating: false,
+                                                                itemCount: 5,
+                                                                itemPadding: EdgeInsets.symmetric(horizontal: 0),
+                                                                itemBuilder: (context, _) => Icon(
+                                                                  Icons.star,
+                                                                  color: Colors.amber,
+                                                                ),
+                                                                onRatingUpdate: (rating) {
+                                                                  setState((){
+
+                                                                  });
+                                                                  print(rating);
+                                                                },
+
                                                               ),
                                                               SizedBox(
                                                                 height: MediaQuery.of(context)
@@ -450,10 +463,11 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                                                                   GestureDetector(
                                                                     onTap:
                                                                         () async {
+
+                                                                      setState((){
+                                                                        flag = false;
+                                                                      });
                                                                       p = await _determinePosition();
-                                                                      Fluttertoast
-                                                                          .showToast(
-                                                                              msg: "Mechanic has been booked successfully");
                                                                       List<Placemark>
                                                                           placemarks =
                                                                           await placemarkFromCoordinates(
@@ -465,8 +479,7 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                                                                           place =
                                                                           placemarks[
                                                                               0];
-                                                                      final Address =
-                                                                          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+                                                                      final Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
                                                                       postDetailsToFirestore(
                                                                           streamSnapshot.data?.docs[index]
                                                                               [
@@ -475,16 +488,8 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                                                                               .fullName
                                                                               .toString(),
                                                                           Address,
-                                                                          "Cash on the spot");
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: (context) => BookMechanicScreen(
-                                                                                    mechanicName: streamSnapshot.data?.docs[index]['fullName'],
-                                                                                    customerName: loggedInUser.fullName.toString(),
-                                                                                    status: 'Pending',
-                                                                                    address: Address,
-                                                                                  )));
+                                                                          "Cash on the spot",streamSnapshot.data?.docs[index].id);
+
                                                                     },
                                                                     child:
                                                                         Container(
@@ -553,28 +558,20 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
+
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
 
   postDetailsToFirestore(String mechanicName, String customerName,
-      String address, String paymentType) async {
+      String address, String paymentType,String? uid) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
     BookMechanicModel userModel = BookMechanicModel();
@@ -591,9 +588,23 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
         .collection("book_mechanic")
         .doc()
         .set(userModel.toMapBooking());
-    Fluttertoast.showToast(msg: "Your account has been created successfully");
+
+    setState((){
+      flag = true;
+    });
+    Fluttertoast
+        .showToast(
+        msg: "Mechanic has been booked successfully");
+    gotoBookingScreen(address,customerName,mechanicName,uid);
   }
 
+  gotoBookingScreen(String address,String userName,String mechanicName,String? uid){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>BookMechanicScreen(
+      mechanicName: mechanicName,
+      customerName: userName,
+      status: 'Pending',
+      address: address,uniId:uid)));
+  }
   void _runFilter1() {
     Stream<QuerySnapshot<Map<String, dynamic>>> results =
         FirebaseFirestore.instance.collection('users').snapshots();

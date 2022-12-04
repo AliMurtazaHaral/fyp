@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//imported google's material design library
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+class ChartData {
+  ChartData(this.x, this.y, this.color);
+  final String x;
+  final double y;
+  final Color color;
+}
+
 class Statistics extends StatefulWidget {
   const Statistics({Key? key}) : super(key: key);
 
@@ -10,12 +18,18 @@ class Statistics extends StatefulWidget {
 
 class _StatisticsState extends State<Statistics> {
   Stream<QuerySnapshot<Map<String, dynamic>>> foundOfficers =
-  FirebaseFirestore.instance.collection('Officer').snapshots();
+  FirebaseFirestore.instance.collection('users').snapshots();
   Stream<QuerySnapshot<Map<String, dynamic>>> foundDrivers =
-  FirebaseFirestore.instance.collection('driver').snapshots();
+  FirebaseFirestore.instance.collection('users').snapshots();
   int? totalDriver = 0;
   int? totalOfficer = 0;
 
+  final List<ChartData> chartData = [
+    ChartData('David', 25, Colors.black),
+    ChartData('Steve', 38, Colors.red),
+    ChartData('Jack', 34, Colors.blue),
+    ChartData('Others', 52, Colors.green)
+  ];
   @override
   void initState(){
     super.initState();
@@ -23,20 +37,21 @@ class _StatisticsState extends State<Statistics> {
   }
   Future<String> totalD(int? a)async{
 
-      totalDriver = a;
+    totalDriver = a;
 
     return await '';
   }
   Future<String> totalO(int? a)async{
 
-      totalOfficer = a;
+    totalOfficer = a;
 
-      return await '';
+    return await '';
   }
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Statistics'),
         backgroundColor: const Color(0xb00d4d79),
@@ -45,6 +60,7 @@ class _StatisticsState extends State<Statistics> {
       body: SingleChildScrollView(
           child: Column(
             children: [
+
               StreamBuilder(
                 stream: foundDrivers,
                 builder:
@@ -76,6 +92,7 @@ class _StatisticsState extends State<Statistics> {
                   List<Widget> Data = [];
                   var image_2;
                   final product = streamSnapshot.data?.docs;
+                  getToken(product?.length);
                   return product?.length != 0
                       ? SingleChildScrollView(
                     child: Column(children: [
@@ -100,7 +117,7 @@ class _StatisticsState extends State<Statistics> {
                   color: const Color(0xffffffff),
                   child: SizedBox(
                     width: 300,
-                    height: 300,
+                    height: 330,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -117,22 +134,17 @@ class _StatisticsState extends State<Statistics> {
                             height: 10,
                           ), //SizedBox
                           Text(
-                            'Total Users',
+                            'Total Users:',
                             style: TextStyle(
                               fontSize: 30,
                               color: const Color(0xff0b2242),
                               fontWeight: FontWeight.w500,
                             ), //Textstyle
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
 
-                          Text(
-                            (totalDriver!+totalOfficer!).toString(),
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: const Color(0xff0b2242),
-                              fontWeight: FontWeight.w500,
-                            ), //Textstyle
-                          ),//Text
                           const SizedBox(
                             height: 10,
                           ), //SizedBox
@@ -142,38 +154,6 @@ class _StatisticsState extends State<Statistics> {
                           ), //SizedBox
                           SizedBox(
                             width: 100,
-
-                            child: ElevatedButton(
-                              onPressed: () => 'Null',
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                  MaterialStateProperty.all(Colors.green)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Row(
-                                  children: const [
-                                    Icon(Icons.touch_app),
-                                    Text('Visit')
-                                  ],
-                                ),
-                              ),
-                            ),
-                            // RaisedButton is deprecated and should not be used
-                            // Use ElevatedButton instead
-
-                            // child: RaisedButton(
-                            // onPressed: () => null,
-                            // color: Colors.green,
-                            // child: Padding(
-                            //	 padding: const EdgeInsets.all(4.0),
-                            //	 child: Row(
-                            //	 children: const [
-                            //		 Icon(Icons.touch_app),
-                            //		 Text('Visit'),
-                            //	 ],
-                            //	 ), //Row
-                            // ), //Padding
-                            // ), //RaisedButton
                           ) //SizedBox
                         ],
                       ), //Column
@@ -193,7 +173,7 @@ class _StatisticsState extends State<Statistics> {
                   color: const Color(0xffffffff),
                   child: SizedBox(
                     width: 300,
-                    height: 300,
+                    height: 360,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -210,19 +190,21 @@ class _StatisticsState extends State<Statistics> {
                             height: 10,
                           ), //SizedBox
                           Text(
-                            'Drivers',
+                            'Drivers:',
                             style: TextStyle(
-                              fontSize: 25,
+                              fontSize: 30,
                               color: const Color(0xff0b2242),
                               fontWeight: FontWeight.w500,
                             ), //Textstyle
                           ),
-
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Text(
                             totalDriver.toString(),
                             style: TextStyle(
-                              fontSize: 15,
-                              color: const Color(0xff0b2242),
+                              fontSize: 30,
+                              color: Colors.green,
                               fontWeight: FontWeight.w500,
                             ), //Textstyle
                           ),//Text
@@ -237,10 +219,12 @@ class _StatisticsState extends State<Statistics> {
                             width: 100,
 
                             child: ElevatedButton(
-                              onPressed: () => 'Null',
+                              onPressed: () => {
+
+                              },
                               style: ButtonStyle(
                                   backgroundColor:
-                                  MaterialStateProperty.all(Colors.green)),
+                                  MaterialStateProperty.all(Color(0xB00B679B))),
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: Row(
@@ -251,22 +235,6 @@ class _StatisticsState extends State<Statistics> {
                                 ),
                               ),
                             ),
-                            // RaisedButton is deprecated and should not be used
-                            // Use ElevatedButton instead
-
-                            // child: RaisedButton(
-                            // onPressed: () => null,
-                            // color: Colors.green,
-                            // child: Padding(
-                            //	 padding: const EdgeInsets.all(4.0),
-                            //	 child: Row(
-                            //	 children: const [
-                            //		 Icon(Icons.touch_app),
-                            //		 Text('Visit'),
-                            //	 ],
-                            //	 ), //Row
-                            // ), //Padding
-                            // ), //RaisedButton
                           ) //SizedBox
                         ],
                       ), //Column
@@ -286,7 +254,7 @@ class _StatisticsState extends State<Statistics> {
                   color: const Color(0xffffffff),
                   child: SizedBox(
                     width: 300,
-                    height: 300,
+                    height: 360,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -303,18 +271,21 @@ class _StatisticsState extends State<Statistics> {
                             height: 10,
                           ), //SizedBox
                           Text(
-                            'Police Officers',
+                            'Police Officers:',
                             style: TextStyle(
                               fontSize: 30,
                               color: const Color(0xff0b2242),
                               fontWeight: FontWeight.w500,
                             ), //Textstyle
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                           Text(
                             totalOfficer.toString(),
                             style: TextStyle(
-                              fontSize: 15,
-                              color: const Color(0xff0b2242),
+                              fontSize: 30,
+                              color: Colors.green,
                               fontWeight: FontWeight.w500,
                             ), //Textstyle
                           ),//Text
@@ -329,10 +300,12 @@ class _StatisticsState extends State<Statistics> {
                             width: 100,
 
                             child: ElevatedButton(
-                              onPressed: () => 'Null',
+                              onPressed: () => {
+
+                              },
                               style: ButtonStyle(
                                   backgroundColor:
-                                  MaterialStateProperty.all(Colors.green)),
+                                  MaterialStateProperty.all(Color(0xB00B679B))),
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: Row(
@@ -372,6 +345,16 @@ class _StatisticsState extends State<Statistics> {
             ],
           )
       ), //Center
+    );
+  }
+  void getToken(int? product) async {
+    await FirebaseMessaging.instance.getToken().then(
+            (token) {
+          setState(() {
+            totalDriver = product;
+          });
+
+        }
     );
   }
 }

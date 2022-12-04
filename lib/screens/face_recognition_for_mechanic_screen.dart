@@ -39,7 +39,7 @@ class MechanicFaceDetectionScreenState extends State<MechanicFaceDetectionScreen
   uploadImage() async {
     flag = false;
     final request = http.MultipartRequest(
-        "POST", Uri.parse("https://9d1e-182-188-162-50.in.ngrok.io/secondImage"));
+        "POST", Uri.parse("https://a242-182-188-198-221.in.ngrok.io/secondImage"));
     final headers = {"Content-type": "multipart/form-data"};
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),

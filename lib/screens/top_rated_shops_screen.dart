@@ -148,7 +148,7 @@ class _TopRatedShopScreenState extends State<TopRatedShopScreen> {
                                             endColor: primaryColor,
                                             gradientOrientation: GradientOrientation.Horizontal,
                                             onTap: (finish)=> {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductScreen(shopName:streamSnapshot.data?.docs[index]['shopName']))),
+                                              //Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductScreen(shopName:streamSnapshot.data?.docs[index]['shopName']))),
                                             },
                                             child: Text(
                                               'Explore',

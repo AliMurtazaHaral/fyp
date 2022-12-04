@@ -32,7 +32,6 @@ class ShopedProductModel {
       'pickupPoint': pickupPoint,
       'deliveryPoint': deliveryPoint,
       'productPrice': productPrice,
-      'riderName': riderName,
       'status': status,
     };
   }

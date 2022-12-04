@@ -33,16 +33,7 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
   final uploadEditingController = TextEditingController();
   final StorageModel storage = StorageModel();
   late Reference getUrl;
-  late AnimationController controller;
-  late Animation<double> animation;
-  @override
-  void initState() {
-    super.initState();
-    controller =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
-    controller.repeat();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -331,14 +322,11 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
                               color: textColor),
                         ),
                       ),
-                      RotationTransition(
-                        turns: controller,
-                        child: Image.asset(
+                      Image.asset(
                           "assets/images/logo.png",
                           height: 200,
                           width: 200,
                         ),
-                      ),
                       fullNameField,
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .05,

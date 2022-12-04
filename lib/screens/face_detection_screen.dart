@@ -33,7 +33,7 @@ class FaceDetectionScreenState extends State<FaceDetectionScreen> {
   uploadImage() async {
 
     final request = http.MultipartRequest(
-        "POST", Uri.parse("https://fca8-182-188-199-66.in.ngrok.io/secondImage"));
+        "POST", Uri.parse("https://69f3-111-68-99-41.in.ngrok.io/secondImage"));
     final headers = {"Content-type": "multipart/form-data"};
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),

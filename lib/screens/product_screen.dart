@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/models/shoped_products.dart';
+import 'package:fyp/screens/loading_screen.dart';
 import 'package:nice_buttons/nice_buttons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../models/userModel.dart';
@@ -11,10 +13,13 @@ import '../services/database.dart';
 import '../utils/fonts.dart';
 import '../widgets/buttons.dart';
 import 'chat/views/conversationScreen.dart';
-
+import 'faq_screen.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 class ProductScreen extends StatefulWidget {
-  ProductScreen({Key? key, required this.shopName}) : super(key: key);
+  ProductScreen({Key? key, required this.shopName,required this.productImage}) : super(key: key);
   String? shopName;
+  String? productImage;
   @override
   State<ProductScreen> createState() => _ProductScreenState();
 }
@@ -30,7 +35,7 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
   Stream<QuerySnapshot<Map<String, dynamic>>> foundMechanic =
   FirebaseFirestore.instance.collection('products').snapshots();
   DatabaseMethods databaseMethods = new DatabaseMethods();
-
+  bool flag = true;
 
 
   User? user = FirebaseAuth.instance.currentUser;
@@ -71,7 +76,7 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     getImg("s");
-    return Scaffold(
+    return flag==false?LoadingScreen():Scaffold(
       appBar: AppBar(
           actions: [],
           backgroundColor: primaryColor,
@@ -130,10 +135,9 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text("${getImg(streamSnapshot.data?.docs[index]['productImage']).toString()}",style: TextStyle(
-                                          color: secondaryColor,fontWeight: FontWeight.bold),),
 
-                                      Image(image: NetworkImage(url),
+
+                                      Image(image: NetworkImage('${widget.productImage}'),
                                         height: 220, width: double.infinity, fit: BoxFit.cover,
                                       ),
                                       Container(
@@ -144,7 +148,7 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
                                             Row(
                                               children: <Widget>[
                                                 CircleAvatar(radius: 25,
-                                                  backgroundImage: NetworkImage(url),
+                                                  backgroundImage: NetworkImage('${widget.productImage}'),
                                                 ),
                                                 Container(width: 15),
                                                 Expanded(
@@ -209,15 +213,72 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
                                                   Container(height: 10),
                                                 ],
                                               ),
-                                            )
+                                            ),
+                                            Accordion(
+                                              title: 'Description',
+                                              content:
+                                              "${streamSnapshot.data?.docs[index]["productDescription"]}",
+                                            ),
+
                                           ],
                                         ),
                                       ),
-                                      Container(height: 5)
+
+                                      Container(height: 5),
+                                      Material(
+                                        elevation: 5,
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.black,
+                                        child: MaterialButton(
+
+                                          padding: const EdgeInsets.fromLTRB(52, 15, 52, 15),
+                                          minWidth: MediaQuery.of(context).size.width * 0.8,
+                                          onPressed: () async{
+                                            Fluttertoast
+                                                .showToast(
+                                                msg: "Mechanic has been booked successfully");
+                                            setState((){
+                                              flag = false;
+                                            });
+                                            p = await _determinePosition();
+                                            Fluttertoast
+                                                .showToast(
+                                                msg: "Mechanic has been booked successfully");
+                                            List<Placemark>
+                                            placemarks =
+                                                await placemarkFromCoordinates(p.latitude, p.longitude);
+                                            print(placemarks);
+                                            Placemark place = placemarks[0];
+                                            final Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+                                            postDetailsToFirestore(
+                                                streamSnapshot.data?.docs[index]
+                                                [
+                                                'productName'],
+                                                streamSnapshot.data?.docs[index]
+                                                [
+                                                'productPrice'],
+                                                streamSnapshot.data?.docs[index]
+                                                [
+                                                'address'],
+                                                Address
+                                            );
+
+                                          },
+                                          child: const Text(
+                                            'Buy Now',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+
+                                                color: Colors.yellow,
+                                                fontWeight: FontWeight.normal),
+
+                                          ),),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 Container(height: 10),
+
                               ],
                             )
                                 : const Text(
@@ -234,6 +295,7 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
                     },
                   ),
                 ),
+
               ],
             )),
       ),
@@ -265,5 +327,58 @@ class _ProductScreenState extends State<ProductScreen> with TickerProviderStateM
     setState(() {
       foundMechanic = results;
     });
+  }
+  late Position p;
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+  postDetailsToFirestore(String name,String price,String shopAddress,String deliveryAddress) async {
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+    ShopedProductModel userModel = ShopedProductModel();
+
+    // writing all the values
+    userModel.pickupPoint = shopAddress;
+    userModel.deliveryPoint = deliveryAddress;
+    userModel.status = 'Pending';
+    userModel.productPrice = price;
+    userModel.productName = name;
+    await firebaseFirestore
+        .collection("shoped_products")
+        .doc()
+        .set(userModel.toMapShopedProduct());
+    setState(() {
+      flag = true;
+    });
+    Fluttertoast
+        .showToast(
+        msg: "Mechanic has been booked successfully");
+    goToMain();
+  }
+  goToMain(){
+    Navigator.pushNamed(context, '/dashboard');
   }
 }

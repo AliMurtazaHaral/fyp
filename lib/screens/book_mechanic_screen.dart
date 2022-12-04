@@ -4,11 +4,12 @@ import 'package:fyp/screens/rate_screen.dart';
 import 'package:fyp/utils/fonts.dart';
 
 class BookMechanicScreen extends StatefulWidget {
-  BookMechanicScreen({Key? key,required this.mechanicName, required this.customerName,required this.status, required this.address}) : super(key: key);
+  BookMechanicScreen({Key? key,required this.mechanicName, required this.customerName,required this.status, required this.address, required this.uniId}) : super(key: key);
   String? customerName;
   String? mechanicName;
   String? address;
   String? status;
+  String? uniId;
 
   @override
   State<BookMechanicScreen> createState() => _BookMechanicScreenState();
@@ -204,7 +205,7 @@ class _BookMechanicScreenState extends State<BookMechanicScreen> {
                 padding: const EdgeInsets.fromLTRB(52, 15, 52, 15),
                 minWidth: MediaQuery.of(context).size.width * 0.5,
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RateScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RateScreen(uniId:widget.uniId)));
                 },
                 child: const Text(
                   'Rate',

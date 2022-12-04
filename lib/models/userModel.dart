@@ -145,4 +145,9 @@ class UserModel {
       'category':category,
     };
   }
+  Map<String, dynamic> toMechanicRating() {
+    return {
+      'rating':rating,
+    };
+  }
 }

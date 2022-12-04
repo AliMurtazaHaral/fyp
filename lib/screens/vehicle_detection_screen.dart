@@ -127,8 +127,7 @@ class DetectScreenState extends State<DetectScreen> {
 
   uploadImage() async{
     final request = http.MultipartRequest(
-        "POST" , Uri.parse("https://fec5-182-188-184-183.eu.ngrok.io/upload")
-    );
+        "POST" , Uri.parse("https://a242-182-188-198-221.in.ngrok.io/upload"));
     final headers = {"Content-type": "multipart/form-data"};
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(),
@@ -194,7 +193,7 @@ class DetectScreenState extends State<DetectScreen> {
                       child: Text(
                         "Lights: ",
                         style: TextStyle(
-                            color: primaryColor, fontWeight: FontWeight.bold,
+                            color: primaryColor, fontWeight: FontWeight.normal,
                             fontSize: 20),
                       ),
                     ),

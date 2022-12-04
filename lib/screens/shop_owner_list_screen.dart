@@ -8,6 +8,7 @@ import 'package:nice_buttons/nice_buttons.dart';
 import '../models/userModel.dart';
 import '../services/database.dart';
 import '../utils/fonts.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ShopOwnerListScreen extends StatefulWidget {
   const ShopOwnerListScreen({Key? key}) : super(key: key);
@@ -120,12 +121,12 @@ class _ShopOwnerListScreenState extends State<ShopOwnerListScreen> {
                                               ),
                                               child: GestureDetector(
                                                 onTap: (){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductScreen(shopName:data['shopName'])));
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductScreen(shopName:data['shopName'],productImage:imageUrl)));
                                                 },
                                                 child: Padding(
                                                     padding: EdgeInsets.only(left: 0,right: 0),
                                                     child: Row(
-
+                                                      mainAxisAlignment:MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Container(
                                                           decoration: BoxDecoration(
@@ -149,7 +150,26 @@ class _ShopOwnerListScreenState extends State<ShopOwnerListScreen> {
                                                                 child: Row(
                                                                   children: [
                                                                     Text("${data['shopName']}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
-                                                                    Text(" | 5 star Rating",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
+                                                                    RatingBar.builder(
+                                                                      itemSize: 15,
+                                                                      initialRating: double.parse(data['productRating']),
+                                                                      minRating: 1,
+                                                                      direction: Axis.horizontal,
+                                                                      allowHalfRating: false,
+                                                                      itemCount: 5,
+                                                                      itemPadding: EdgeInsets.symmetric(horizontal: 0),
+                                                                      itemBuilder: (context, _) => Icon(
+                                                                        Icons.star,
+                                                                        color: Colors.amber,
+                                                                      ),
+                                                                      onRatingUpdate: (rating) {
+                                                                        setState((){
+
+                                                                        });
+                                                                        print(rating);
+                                                                      },
+
+                                                                    ),
                                                                   ],
                                                                 ),
                                                               ),
