@@ -127,7 +127,7 @@ class DetectScreenState extends State<DetectScreen> {
 
   uploadImage() async{
     final request = http.MultipartRequest(
-        "POST" , Uri.parse("https://a242-182-188-198-221.in.ngrok.io/upload"));
+        "POST" , Uri.parse("https://bb32-111-68-99-41.in.ngrok.io/upload"));
     final headers = {"Content-type": "multipart/form-data"};
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(),

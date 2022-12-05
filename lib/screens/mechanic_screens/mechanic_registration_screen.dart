@@ -290,13 +290,25 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
     //signup button
     final signUpButton =
         PrimaryButton.primaryButton(context, "Next", onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MechanicCategoryRegistrationScreen(
+                fullName: fullNameEditingController.text,
+                email: emailEditingController.text,
+                phoneNumber: mobileNumberEditingController.text,
+                cnic: cnicEditingController.text,
+                password: passwordEditingController.text,
+                city: cityEditingController.text,
+                uploadImage: getUrl.fullPath.toString())),
+      );
       signUp(emailEditingController.text, passwordEditingController.text);
     });
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        color: Colors.yellow,
+        color: Colors.black,
         child: SingleChildScrollView(
           child: Container(
             child: Padding(
@@ -394,18 +406,8 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
         .collection("users")
         .doc(user?.uid)
         .set(userModel.toBecomeMechanicRegistration());
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => MechanicCategoryRegistrationScreen(
-              fullName: fullNameEditingController.text,
-              email: emailEditingController.text,
-              phoneNumber: mobileNumberEditingController.text,
-              cnic: cnicEditingController.text,
-              password: passwordEditingController.text,
-              city: cityEditingController.text,
-              uploadImage: getUrl.fullPath.toString())),
-    );
+    Fluttertoast.showToast(msg: 'Move tp Next Page');
+      goToCategory();
   }
 
   void signUp(String email, String password) async {
@@ -419,5 +421,20 @@ class _MechanicRegistrationScreenState extends State<MechanicRegistrationScreen>
 
   signUpChecker() {
     signUp(emailEditingController.text, passwordEditingController.text);
+  }
+  goToCategory(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MechanicCategoryRegistrationScreen(
+              fullName: fullNameEditingController.text,
+              email: emailEditingController.text,
+              phoneNumber: mobileNumberEditingController.text,
+              cnic: cnicEditingController.text,
+              password: passwordEditingController.text,
+              city: cityEditingController.text,
+              uploadImage: getUrl.fullPath.toString())),
+    );
+
   }
 }

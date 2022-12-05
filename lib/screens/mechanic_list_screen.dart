@@ -105,16 +105,9 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                         const SizedBox(
                           width: 10,
                         ),
-                        FilterButton.filterButton(context, "Diesel Mechanic",
+                        FilterButton.filterButton(context, "Diesel Engine Mechanic",
                             onTap: () {
-                          _runFilter("Diesel Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "General Automotive Mechanic", onTap: () {
-                          _runFilter("General Automotive Mechanic");
+                          _runFilter("Diesel Engine Mechanic");
                         }),
                         SizedBox(
                           width: 10,
@@ -127,65 +120,17 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                         SizedBox(
                           width: 10,
                         ),
-                        FilterButton.filterButton(context, "Auto Body Mechanic",
+                        FilterButton.filterButton(context, "Dentar and Painter",
                             onTap: () {
-                          _runFilter("Auto Body Mechanic");
+                          _runFilter("Dentar and Painter");
                         }),
+
                         SizedBox(
                           width: 10,
                         ),
-                        FilterButton.filterButton(context, "Race Car Mechanic",
+                        FilterButton.filterButton(context, "Tire Puncture",
                             onTap: () {
-                          _runFilter("Race Car Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Service Technician",
-                            onTap: () {
-                          _runFilter("Service Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Auto Glass Mechanic", onTap: () {
-                          _runFilter("Auto Glass Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Heavy Equipment Mechanic", onTap: () {
-                          _runFilter("Heavy Equipment Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Air Craft Mechanic",
-                            onTap: () {
-                          _runFilter("Air Craft Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Small Engine Mechanic", onTap: () {
-                          _runFilter("Small Engine Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Marine Mechanic",
-                            onTap: () {
-                          _runFilter("Marine Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Tire Mechanic",
-                            onTap: () {
-                          _runFilter("Tire Mechanic");
+                          _runFilter("Tire Puncture");
                         }),
                         SizedBox(
                           width: 10,
@@ -194,104 +139,21 @@ class _MechanicListScreenState extends State<MechanicListScreen> {
                             context, "Motorcycle Mechanic", onTap: () {
                           _runFilter("Motorcycle Mechanic");
                         }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Boat Mechanic",
-                            onTap: () {
-                          _runFilter("Boat Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Bicycle Mechanic",
-                            onTap: () {
-                          _runFilter("Bicycle Mechanic");
-                        }),
+
                         SizedBox(
                           width: 10,
                         ),
                         FilterButton.filterButton(
-                            context, "Air Conditioning Mechanic", onTap: () {
-                          _runFilter("Air Conditioning Mechanic");
+                            context, "AC Repairer", onTap: () {
+                          _runFilter("AC Reapirer");
                         }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Plumbing Mechanic",
-                            onTap: () {
-                          _runFilter("Plumbing Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Line Mechanic",
-                            onTap: () {
-                          _runFilter("Line Mechanic");
-                        }),
+
                         SizedBox(
                           width: 10,
                         ),
                         FilterButton.filterButton(
-                            context, "Auto Exhaust Mechanic", onTap: () {
-                          _runFilter("Auto Exhaust Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Aftermarket Mechanic", onTap: () {
-                          _runFilter("Aftermarket Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Welding Mechanic",
-                            onTap: () {
-                          _runFilter("Welding Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(context, "Welding Mechanic",
-                            onTap: () {
-                          _runFilter("Welding Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Motorcycle Engine Mechanic", onTap: () {
-                          _runFilter("Motorcycle Engine Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Motorcycle Technician", onTap: () {
-                          _runFilter("Motorcycle Technician");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Motorcycle Service Technician",
-                            onTap: () {
-                          _runFilter("Motorcycle Service Technician");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Carburetor Mechanic", onTap: () {
-                          _runFilter("Carburetor Mechanic");
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        FilterButton.filterButton(
-                            context, "Heavy Bike Mechanic", onTap: () {
-                          _runFilter("Heavy Bike Mechanic");
+                            context, "Petrol Engine Mechanic", onTap: () {
+                          _runFilter("Petrol Engine Mechanic");
                         }),
                       ],
                     ),
